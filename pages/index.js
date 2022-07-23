@@ -79,22 +79,22 @@ export default function Home() {
     })
 
     peer.on("signal", (data) => {
-			socket.emit("MakeCall", {
-				user: to,
-				signal: data,
-				from: username,
-			})
-		})
+      socket.emit("MakeCall", {
+        user: to,
+        signal: data,
+        from: username,
+      })
+    })
 
     peer.on("stream", (stream) => {
-			UserVideo.current.srcObject = stream
-		})
+      UserVideo.current.srcObject = stream
+    })
 
     PRINT(`callAccepted${username}`)
 
     socket.on(`callAccepted${username}`, (signal) => {
-			peer.signal(signal)
-		})
+      peer.signal(signal)
+    })
 
     connectionRef.current = peer;
 
@@ -103,45 +103,53 @@ export default function Home() {
   const AnswerCall = () => {
 
     const peer = new Peer({
-			initiator: false,
-			trickle: false,
-			stream: MyStream
-		})
+      initiator: false,
+      trickle: false,
+      stream: MyStream
+    })
 
     peer.on("signal", (data) => {
       PRINT(callerInfo)
-			socket.emit("AnswerCall", {to: callerInfo.caller , signal: data })
-		})
+      socket.emit("AnswerCall", { to: callerInfo.caller, signal: data })
+    })
 
     peer.on("stream", (stream) => {
-			UserVideo.current.srcObject = stream
-		})
+      UserVideo.current.srcObject = stream
+    })
 
     peer.signal(callerInfo.signal)
 
-		connectionRef.current = peer;
+    connectionRef.current = peer;
 
   }
 
   const leaveCall = () => {
-    setCallerInfo({...callerInfo , recievingCall : false})
-		connectionRef.current.destroy()
-	}
+    setCallerInfo({ ...callerInfo, recievingCall: false })
+    connectionRef.current.destroy()
+  }
 
 
   return (
-    <div>
+    <div >
 
-      <div className="myvideo">
-        <video playsInline muted ref={MyVideo} autoPlay style={{ width: "300px" }} />
-      </div>
+      <div className="lg:flex lg:w-[820px] bg-[#1a707c] border-[#000000] rounded-3xl lg:p-5 lg:space-x-4 w-[375px] p-3 ">
+        <div className="lg:w-[400px] lg:h-[310px] bg-[#F8F0F0] rounded-lg lg:p-3 w-[350px] h-[280px] p-2">
+          <video playsInline muted ref={MyVideo} autoPlay />
+          <div className="text-center">{username}</div>
+        </div>
 
-      <div className="uservideo">
-        <video playsInline ref={UserVideo} autoPlay style={{ width: "300px" }} />
+        <div className="lg:w-[400px] lg:h-[310px] bg-[#F8F0F0] rounded-lg lg:p-3 w-[350px] h-[280px] p-2 mt-3 lg:mt-0">
+          <video
+            playsInline
+            ref={UserVideo}
+            autoPlay
+          />
+          <div className="text-center">{callerInfo.caller}</div>
+        </div>
       </div>
 
       <div className="CallToSomeOne">
-        <input type="button" value="ClickToCall" onClick={()=>{
+        <input type="button" value="ClickToCall" onClick={() => {
           const to = prompt("USer To Call");
           MakeCall(to);
         }} />
@@ -150,15 +158,15 @@ export default function Home() {
       <div className="acceptcall">
         {
           callerInfo.recievingCall ? (
-          <h1>
-            Call Comes
-            <button onClick={AnswerCall} >Recieve Call</button>
-          </h1>
-        ) : ( 
-          <h1>
-            {`${callerInfo.recievingCall} dbejkbs`}
-          </h1>
-         )
+            <h1>
+              Call Comes
+              <button onClick={AnswerCall} >Recieve Call</button>
+            </h1>
+          ) : (
+            <h1>
+              {`${callerInfo.recievingCall}`}
+            </h1>
+          )
         }
       </div>
 
