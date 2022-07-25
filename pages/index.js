@@ -15,6 +15,8 @@ export default function Home() {
   const [ MyStream, SetMyStream ] = useState();
   const [ username, setusername ] = useState("");
 
+  const [ userToCall, setUserToCall ] = useState("");
+
   const MyVideo = useRef();
   const UserVideo = useRef();
   const connectionRef = useRef();
@@ -55,13 +57,21 @@ export default function Home() {
         PRINT("Permission Denied");
       });
   };
+  // let isMobileDevice = false;
+  const [isMobileDevice , setIsMobileDevice] = useState(true); 
 
   useEffect(() => {
-    //  Execute on page load
+
+    let details = navigator.userAgent;
+    let regexp = /android|iphone|kindle|ipad/i;
+    setIsMobileDevice(regexp.test(details))
     const u = prompt("Enter the Username");
     setusername(u);
     GetPermissionForCameraAndAudio();
     socketInitializer(u);
+    
+    if (isMobileDevice === true ) return ;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const MakeCall = (to) => {
@@ -120,47 +130,67 @@ export default function Home() {
   };
 
   return (
-    <div className="flex items-center justify-center mt-20 space-x-3">
-      <div className="lg:flex lg:w-[820px] bg-[#1a707c] border-[#000000] rounded-3xl lg:p-5 lg:space-x-4 w-[375px] p-3 ">
-        <div className="lg:w-[400px] lg:h-[310px] bg-[#F8F0F0] rounded-lg lg:p-3 w-[350px] h-[280px] p-2">
-          <video playsInline muted ref={MyVideo} autoPlay />
-          <div className="text-center">{username}</div>
-        </div>
-
-        <div className="lg:w-[400px] lg:h-[310px] bg-[#F8F0F0] rounded-lg lg:p-3 w-[350px] h-[280px] p-2 mt-3 lg:mt-0">
-          <video playsInline ref={UserVideo} autoPlay />
-          <div className="text-center">{callerInfo.caller}</div>
-        </div>
-      </div>
-
-      <div>
-        <div className="CallToSomeOne inline-block px-6 py-2 border-2 border-blue-600 text-blue-600 font-medium text-xs leading-tight uppercase rounded hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out">
-          <input
-            type="button"
-            value="ClickToCall"
-            onClick={() => {
-              const to = prompt("User To Call");
-              MakeCall(to);
-            }}
-          />
-        </div>
-
-        <div className="acceptcall ">
-          {callerInfo.recievingCall ? (
-            <h1>
-              Call Comes : 
-              <button className="inline-block px-6 py-2 border-2 border-blue-600 text-blue-600 font-medium text-xs leading-tight uppercase rounded hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out" onClick={AnswerCall}>Recieve Call</button>
-            </h1>
-          ) : (
-            <h1>{`${callerInfo.recievingCall}`}</h1>
-          )}
-        </div>
-
-        <div className="endCall inline-block px-6 py-2 border-2 border-blue-600 text-blue-600 font-medium text-xs leading-tight uppercase rounded hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out">
-          <button onClick={leaveCall}>EndCall</button>
-        </div>
-
-      </div>
+    <div>
+      {
+        isMobileDevice !== true ? 
+        (
+          <div className="flex items-center justify-center mt-20 space-x-3">
+      
+            <div>
+              <h1 className="text-center text-xl font-serif mb-5 text-[#212f3c]">Peer 2 Peer Web App</h1>
+              <div className="lg:flex lg:w-[820px] bg-[#1a707c] border-[#000000] rounded-3xl lg:p-5 lg:space-x-4 w-[375px] p-3 ">
+                <div className="lg:w-[400px] lg:h-[310px] bg-[#F8F0F0] rounded-lg lg:p-3 w-[350px] h-[280px] p-2">
+                  <video playsInline muted ref={MyVideo} autoPlay />
+                  <div className="text-center">{username}</div>
+                </div>
+      
+                <div className="lg:w-[400px] lg:h-[310px] bg-[#F8F0F0] rounded-lg lg:p-3 w-[350px] h-[280px] p-2 mt-3 lg:mt-0">
+                  <video playsInline ref={UserVideo} autoPlay />
+                  <div className="text-center">{callerInfo.caller}</div>
+                </div>
+              </div>
+            </div>
+      
+            <div className="space-y-4">
+      
+              <div className="flex">
+                <input type="text" id="website-admin" className="rounded-none rounded-l-lg bg-gray-50 border border-blue-600 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5"
+                  placeholder="User" value={userToCall}
+                  onChange={(e) => {
+                    e.preventDefault();
+                    setUserToCall(e.target.value);
+                  }}
+                />
+                <button
+                  className="inline-flex items-center px-3 text-xs text-blue-600 bg-gray-200 rounded-r-md border border-l-0 border-blue-600"
+                  onClick={() => {
+                    MakeCall(userToCall);
+                  }}
+                >
+                  Click to Call
+                </button>
+              </div>
+      
+              <div className="acceptcall ">
+                {callerInfo.recievingCall ? (
+                  <h1>
+                    Call Comes :
+                    <button className="inline-block px-6 py-2 border-2 border-blue-600 text-blue-600 font-medium text-xs leading-tight uppercase rounded hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out" onClick={AnswerCall}>Recieve Call</button>
+                  </h1>
+                ) : (
+                  <h1>{`status : ${callerInfo.recievingCall}`}</h1>
+                )}
+              </div>
+      
+              <div className="endCall inline-block px-6 py-2 border-2 border-blue-600 text-blue-600 font-medium text-xs leading-tight uppercase rounded hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out">
+                <button onClick={leaveCall}>EndCall</button>
+              </div>
+      
+            </div>
+          </div>
+        )
+        :(<h1>Open in Desktop</h1>)
+      }
     </div>
-  );
+  )
 }
