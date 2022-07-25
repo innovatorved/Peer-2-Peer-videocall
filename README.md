@@ -1,6 +1,7 @@
 #  Peer-2-Peer-videocall
 
-A WebRTC implementation of Peer to Peer videocall 
+A WebRTC implementation of Peer to Peer videocall for Desktop
+Note: currently it only work on Desktop
 
 ## Demo
 
