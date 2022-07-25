@@ -6,7 +6,7 @@ A WebRTC implementation of Peer to Peer videocall
 
 [https://peer2peer-videocall.herokuapp.com/](https://peer2peer-videocall.herokuapp.com/)
 
- <img src="" alt="peer2peer" height=300/>
+ <img src="https://raw.githubusercontent.com/innovatorved/Peer-2-Peer-videocall/main/peer2peer-img.png" alt="peer2peer" height=400/>
 
 
 ## Deployment
